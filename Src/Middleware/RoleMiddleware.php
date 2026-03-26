@@ -3,6 +3,7 @@
 namespace Src\Middleware;
 
 use Src\Core\Request;
+use Src\Core\HttpException;
 
 class RoleMiddleware
 {
@@ -11,20 +12,20 @@ class RoleMiddleware
         $user = Request::user();
 
         if (!$user) {
-            self::abort(401, "Usuário não autenticado");
+            throw new HttpException("Token inválido", 401);
         }
 
         if (!in_array($user->role, $roles)) {
-            self::abort(403, "Acesso negado");
+            throw new HttpException("Token inválido", 401);
         }
     }
 
-    private static function abort($code, $message)
-    {
-        http_response_code($code);
-        echo json_encode(["error" => $message]);
-        exit;
-    }
+    // private static function abort($code, $message)
+    // {
+    //     http_response_code($code);
+    //     echo json_encode(["error" => $message]);
+    //     exit;
+    // }
 }
 
 ?>

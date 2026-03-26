@@ -4,54 +4,42 @@ namespace Src\Controllers;
 
 use Src\Services\UsuarioService;
 use Src\Core\Request;
+use Src\Core\Response;
+use Src\Core\HttpException;
 
 class UsuarioController
 {
     private UsuarioService $service;
 
-    public function __construct()
+    public function __construct(UsuarioService $service)
     {
-        $this->service = new UsuarioService();
+        $this->service = $service;
     }
 
     public function create()
     {
-        $user = Request::user();
+        $user = Request::user(); // Validação Middleware
 
-        try {
-            $data = json_decode(file_get_contents("php://input"), true);
+        $data = json_decode(file_get_contents("php://input"), true);
 
-            // validação básica
-            if (
-                !isset($data['nome']) ||
-                !isset($data['email']) ||
-                !isset($data['senha']) ||
-                !isset($data['roleId'])
-            ) {
-                http_response_code(400);
-                echo json_encode([
-                    "error" => "Dados obrigatórios não informados"
-                ]);
-                return;
-            }
-
-            $this->service->create(
-                $data['nome'],
-                $data['email'],
-                $data['senha'],
-                (int)$data['roleId']
-            );
-
-            http_response_code(201);
-            echo json_encode([
-                "message" => "Usuário criado com sucesso"
-            ]);
-
-        } catch (\Exception $e) {
-            http_response_code(400);
-            echo json_encode([
-                "error" => $e->getMessage()
-            ]);
+        if (
+            !isset($data['nome']) ||
+            !isset($data['email']) ||
+            !isset($data['senha']) ||
+            !isset($data['roleId'])
+        ) {
+            throw new HttpException("Dados obrigatórios não informados", 400);
         }
+
+        $this->service->create(
+            $data['nome'],
+            $data['email'],
+            $data['senha'],
+            (int)$data['roleId']
+        );
+
+        Response::success([
+            "message" => "Usuário criado com sucesso"
+        ], 201);
     }
 }

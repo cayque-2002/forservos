@@ -4,6 +4,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../src/Config/env.php';
 
 use Src\Middleware\MiddlewareHandler;
+use Src\Core\ExceptionHandler;
+
+set_exception_handler([ExceptionHandler::class, 'handle']);
 
 header('Content-Type: application/json');
 

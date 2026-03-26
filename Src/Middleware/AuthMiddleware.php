@@ -5,6 +5,9 @@ namespace Src\Middleware;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Src\Core\Request;
+use Src\Core\HttpException;
+
+throw new HttpException("Token inválido", 401);
 
 class AuthMiddleware
 {
@@ -13,7 +16,7 @@ class AuthMiddleware
         $headers = getallheaders();
 
         if (!isset($headers['Authorization'])) {
-            self::abort(401, "Token não informado");
+            throw new HttpException("Token inválido", 401);
         }
 
         $token = str_replace('Bearer ', '', $headers['Authorization']);
@@ -26,16 +29,16 @@ class AuthMiddleware
             Request::setUser($decoded);
 
         } catch (\Exception $e) {
-            self::abort(401, "Token inválido");
+            throw new HttpException("Token inválido", 401);
         }
     }
 
-    private static function abort($code, $message)
-    {
-        http_response_code($code);
-        echo json_encode(["error" => $message]);
-        exit;
-    }
+    // private static function abort($code, $message)
+    // {
+    //     http_response_code($code);
+    //     echo json_encode(["error" => $message]);
+    //     exit;
+    // }
 }
 
 ?>
