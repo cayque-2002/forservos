@@ -3,6 +3,8 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../src/Config/env.php';
 
+use Src\Middleware\MiddlewareHandler;
+
 header('Content-Type: application/json');
 
 // URL e método
@@ -12,11 +14,20 @@ $method = $_SERVER['REQUEST_METHOD'];
 // Mapeamento de rotas
 $routes = [
     'usuario' => [
-        'create' => 'POST',
-        'list' => 'GET'
+        'create' => [
+            'method' => 'POST',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'list' => [
+            'method' => 'GET',
+            'middlewares' => ['auth','role:admin,user']
+        ]
     ],
     'auth' => [
-        'login' => 'POST'
+        'login' => [
+            'method' => 'POST',
+            'middlewares' => []
+        ]
     ]
 ];
 
@@ -41,13 +52,17 @@ if (!isset($routes[$controllerKey][$action])) {
 }
 
 // Valida método HTTP
-$expectedMethod = $routes[$controllerKey][$action];
+$route = $routes[$controllerKey][$action];
+
+$expectedMethod = $route['method'];
+$middlewares = $route['middlewares'];
 
 if ($method !== $expectedMethod) {
     http_response_code(405);
     echo json_encode(["error" => "Método não permitido"]);
     exit;
 }
+MiddlewareHandler::handle($middlewares);
 
 // Monta controller
 $controllerName = ucfirst($controllerKey);

@@ -3,6 +3,7 @@
 namespace Src\Controllers;
 
 use Src\Services\UsuarioService;
+use Src\Core\Request;
 
 class UsuarioController
 {
@@ -15,6 +16,8 @@ class UsuarioController
 
     public function create()
     {
+        $user = Request::user();
+
         try {
             $data = json_decode(file_get_contents("php://input"), true);
 
