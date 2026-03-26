@@ -6,7 +6,18 @@ require_once __DIR__ . '/../src/Config/env.php';
 use Src\Middleware\MiddlewareHandler;
 use Src\Core\ExceptionHandler;
 
-set_exception_handler([ExceptionHandler::class, 'handle']);
+
+set_exception_handler(function ($e) {
+
+    if ($e instanceof \Src\Core\Exceptions\HttpException) {
+        \Src\Core\Response::error($e->getMessage(), $e->getCode());
+        return;
+    }
+
+    \Src\Core\Response::error("Erro interno", 500);
+});
+
+// set_exception_handler([ExceptionHandler::class, 'handle']);
 
 header('Content-Type: application/json');
 

@@ -19,17 +19,13 @@ class AuthController
     {
         $data = json_decode(file_get_contents("php://input"), true);
 
-        $email = $data['email'] ?? null;
-        $senha = $data['senha'] ?? null;
-
-        if (!$email || !$senha) {
-            throw new HttpException("Email e senha são obrigatórios", 400);
-        }
+        $email = $data['email'] ?? '';  
+        $senha = $data['senha'] ?? '';
 
         $token = $this->service->login($email, $senha);
 
         Response::success([
-            'token' => $token
+            "token" => $token
         ]);
     }
 }

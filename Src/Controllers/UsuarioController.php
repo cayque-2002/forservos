@@ -18,8 +18,6 @@ class UsuarioController
 
     public function create()
     {
-        $user = Request::user(); // Validação Middleware
-
         $data = json_decode(file_get_contents("php://input"), true);
 
         if (
@@ -28,7 +26,8 @@ class UsuarioController
             !isset($data['senha']) ||
             !isset($data['roleId'])
         ) {
-            throw new HttpException("Dados obrigatórios não informados", 400);
+            Response::error("Dados obrigatórios não informados", 400);
+            return;
         }
 
         $this->service->create(
