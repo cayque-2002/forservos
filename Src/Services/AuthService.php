@@ -2,7 +2,7 @@
 
 namespace Src\Services;
 
-use Src\Repositories\UsuarioRepository;
+use Src\Infrastructure\Repositories\UsuarioRepository;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 

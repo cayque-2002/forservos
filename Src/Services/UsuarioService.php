@@ -1,15 +1,17 @@
 <?php
 namespace Src\Services;
 
-use Src\Repositories\UsuarioRepository;
+use Src\Infrastructure\Repositories\UsuarioRepository;
+use Src\Domain\Repositories\IUsuarioRepository;
+
 
 class UsuarioService
 {
-    private UsuarioRepository $repo;
+    private IUsuarioRepository $repository;
 
-    public function __construct()
+    public function __construct(IUsuarioRepository $repository)
     {
-        $this->repo = new UsuarioRepository();
+        $this->repository = $repository;
     }
 
   public function create(string $nome, string $email, string $senha, int $roleid)
@@ -30,7 +32,7 @@ class UsuarioService
             throw new \Exception("Usuário já existe");
         }
 
-        $this->repo->create($nome, $email, $senha, $roleid);
+        $this->repository->create($nome, $email, $senha, $roleid);
     }
 
 
