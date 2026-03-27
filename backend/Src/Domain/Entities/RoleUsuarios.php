@@ -17,11 +17,11 @@ class RoleUsuarios
 
     private function setNome(string $nome_role)
     {
-        if (empty($nome)) {
-            throw new \Src\Core\HttpException("Nome é obrigatório", 400);
+        if (empty($nome_role)) {
+            throw new \Src\Core\HttpException("Nome da role é obrigatória", 400);
         }
 
-        $this->nome = $nome;
+        $this->nome_role = $nome_role;
     }
 
     //get (somente leitura)

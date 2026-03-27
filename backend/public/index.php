@@ -101,6 +101,82 @@ $routes = [
             'middlewares' => ['auth', 'role:admin']
         ]
     ],
+    'situacaoclientes' => [
+        '_controller' => 'Src\\Controllers\\SituacaoClientesController',
+        'create' => [
+            'method' => 'POST',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'list' => [
+            'method' => 'GET',
+            'middlewares' => ['auth', 'role:admin,user']
+        ],
+        'update' => [
+            'method' => 'PUT',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'delete' => [
+            'method' => 'DELETE',
+            'middlewares' => ['auth', 'role:admin']
+        ]
+    ],
+    'situacaoos' => [
+        '_controller' => 'Src\\Controllers\\SituacaoOsController',
+        'create' => [
+            'method' => 'POST',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'list' => [
+            'method' => 'GET',
+            'middlewares' => ['auth', 'role:admin,user']
+        ],
+        'update' => [
+            'method' => 'PUT',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'delete' => [
+            'method' => 'DELETE',
+            'middlewares' => ['auth', 'role:admin']
+        ]
+    ],
+    'statusproduto' => [
+        '_controller' => 'Src\\Controllers\\StatusProdutoController',
+        'create' => [
+            'method' => 'POST',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'list' => [
+            'method' => 'GET',
+            'middlewares' => ['auth', 'role:admin,user']
+        ],
+        'update' => [
+            'method' => 'PUT',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'delete' => [
+            'method' => 'DELETE',
+            'middlewares' => ['auth', 'role:admin']
+        ]
+    ],
+    'tipoprazogarantia' => [
+        '_controller' => 'Src\\Controllers\\TipoPrazoGarantiaController',
+        'create' => [
+            'method' => 'POST',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'list' => [
+            'method' => 'GET',
+            'middlewares' => ['auth', 'role:admin,user']
+        ],
+        'update' => [
+            'method' => 'PUT',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'delete' => [
+            'method' => 'DELETE',
+            'middlewares' => ['auth', 'role:admin']
+        ]
+    ],
     'auth' => [
         '_controller' => 'Src\\Controllers\\AuthController',
         'login' => [
@@ -194,6 +270,38 @@ switch ($controllerClass) {
         $controller = new $controllerClass(
             new \Src\Services\CidadeService(
                 new \Src\Infrastructure\Repositories\CidadeRepository()
+            )
+        );
+        break;
+    
+    case "Src\\Controllers\\SituacaoClientesController":
+        $controller = new $controllerClass(
+            new \Src\Services\SituacaoClientesService(
+                new \Src\Infrastructure\Repositories\SituacaoClientesRepository()
+            )
+        );
+        break;
+
+    case "Src\\Controllers\\SituacaoOsController":
+        $controller = new $controllerClass(
+            new \Src\Services\SituacaoOsService(
+                new \Src\Infrastructure\Repositories\SituacaoOsRepository()
+            )
+        );
+        break;
+
+    case "Src\\Controllers\\StatusProdutoController":
+        $controller = new $controllerClass(
+            new \Src\Services\StatusProdutoService(
+                new \Src\Infrastructure\Repositories\StatusProdutoRepository()
+            )
+        );
+        break;
+
+    case "Src\\Controllers\\TipoPrazoGarantiaController":
+        $controller = new $controllerClass(
+            new \Src\Services\TipoPrazoGarantiaService(
+                new \Src\Infrastructure\Repositories\TipoPrazoGarantiaRepository()
             )
         );
         break;
