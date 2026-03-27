@@ -4,41 +4,34 @@ namespace Src\Middleware;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Src\Core\Request;
 use Src\Core\HttpException;
-
-throw new HttpException("Token inválido", 401);
+use Src\Core\Request;
 
 class AuthMiddleware
 {
-    public static function handle()
+    public static function handle(): void
     {
         $headers = getallheaders();
 
-        if (!isset($headers['Authorization'])) {
+        $authorization = $headers['Authorization']
+            ?? $headers['authorization']
+            ?? null;
+
+        if (!$authorization) {
+            throw new HttpException("Token não informado", 401);
+        }
+
+        if (!str_starts_with($authorization, 'Bearer ')) {
             throw new HttpException("Token inválido", 401);
         }
 
-        $token = str_replace('Bearer ', '', $headers['Authorization']);
-        $key = $_ENV['JWT_SECRET'];
+        $token = trim(str_replace('Bearer ', '', $authorization));
 
         try {
-            $decoded = JWT::decode($token, new Key($key, 'HS256'));
-
-            // 🔥 aqui muda tudo
+            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
             Request::setUser($decoded);
-
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new HttpException("Token inválido", 401);
         }
     }
-
-    // private static function abort($code, $message)
-    // {
-    //     http_response_code($code);
-    //     echo json_encode(["error" => $message]);
-    //     exit;
-    // }
 }
-
-?>

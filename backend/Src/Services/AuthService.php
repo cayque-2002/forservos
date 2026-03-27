@@ -22,11 +22,11 @@ class AuthService
         $user = $this->repo->findByEmail($email);
         
         if (!$user) {
-            throw new HttpException("Usuário não encontrado", 404);
+            throw new \Src\Core\HttpException("Usuário não encontrado", 404);
         }
 
         if (!password_verify($senha, $user['senha'])) {
-            throw new HttpException("Credenciais inválidas", 401);
+            throw new \Src\Core\HttpException("Credenciais inválidas", 401);
         }
 
         $payload = [

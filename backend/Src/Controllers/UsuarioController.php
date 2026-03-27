@@ -41,4 +41,53 @@ class UsuarioController
             "message" => "Usuário criado com sucesso"
         ], 201);
     }
+
+    public function list()
+    {
+        $usuarios = $this->service->list();
+
+        Response::success($usuarios);
+    }
+
+    public function update()
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        if (
+            !isset($data['id']) ||
+            !isset($data['nome']) ||
+            !isset($data['email']) ||
+            !isset($data['roleId']) ||
+            !isset($data['ativo'])
+        ) {
+            throw new HttpException("Dados obrigatórios não informados", 400);
+        }
+
+        $this->service->update(
+            (int)$data['id'],
+            $data['nome'],
+            $data['email'],
+            (int)$data['roleId'],
+            (bool)$data['ativo']
+        );
+
+        Response::success([
+            "message" => "Usuário atualizado com sucesso"
+        ]);
+    }
+
+    public function delete()
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        if (!isset($data['id'])) {
+            throw new HttpException("Id do usuário não informado", 400);
+        }
+
+        $this->service->delete((int)$data['id']);
+
+        Response::success([
+            "message" => "Usuário removido com sucesso"
+        ]);
+    }
 }

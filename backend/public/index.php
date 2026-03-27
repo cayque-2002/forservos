@@ -10,6 +10,10 @@ use Src\Core\ExceptionHandler;
 // Exception global
 set_exception_handler([ExceptionHandler::class, 'handle']);
 
+//debug compilation dump
+// var_dump(class_exists(\Src\Infrastructure\Repositories\RoleUsuariosRepository::class));
+// die();
+
 // Headers
 header('Content-Type: application/json');
 
@@ -34,7 +38,15 @@ $routes = [
         ],
         'list' => [
             'method' => 'GET',
-            'middlewares' => ['auth','role:admin,user']
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'update' => [
+            'method' => 'PUT',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'delete' => [
+            'method' => 'DELETE',
+            'middlewares' => ['auth', 'role:admin']
         ]
     ],
     'auth' => [
@@ -104,6 +116,15 @@ switch ($controllerClass) {
             )
         );
         break;
+
+    // case "Src\\Controllers\\RoleUsuariosController":
+    //     $controller = new $controllerClass(
+    //         new \Src\Services\RoleUsuariosService(
+    //             new \Src\Infrastructure\Repositories\RoleUsuariosRepository()
+    //         )
+    //     );
+    //     break;
+
 
     default:
         $controller = new $controllerClass();

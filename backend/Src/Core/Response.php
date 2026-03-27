@@ -4,7 +4,7 @@ namespace Src\Core;
 
 class Response
 {
-    public static function success($data = null, int $code = 200)
+    public static function success($data = null, int $code = 200): void
     {
         http_response_code($code);
 
@@ -13,9 +13,11 @@ class Response
             "data" => $data,
             "error" => null
         ]);
+
+        exit;
     }
 
-    public static function error(string $message, int $code = 400)
+    public static function error(string $message, int $code = 400): void
     {
         http_response_code($code);
 
@@ -27,6 +29,8 @@ class Response
                 "code" => $code
             ]
         ]);
+
+        exit;
     }
 }
 

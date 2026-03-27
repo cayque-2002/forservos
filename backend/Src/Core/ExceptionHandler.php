@@ -24,13 +24,13 @@ class ExceptionHandler
     //     ]);
     // }
 
-    public static function handle(\Throwable $e)
+   public static function handle(\Throwable $e): void
     {
-        if ($e instanceof HttpException) {
+        if ($e instanceof \Src\Core\HttpException) {
             Response::error($e->getMessage(), $e->getStatusCode());
+            return;
         }
 
-        // erro inesperado
         Response::error("Erro interno do servidor", 500);
     }
 }
