@@ -9,18 +9,18 @@ class Usuario
     private string $nome;
     private string $email;
     private string $senha;
-    private int $roleId;
+    private int $roleid;
 
     public function __construct(
         string $nome,
         string $email,
         string $senha,
-        int $roleId
+        int $roleid
     ) {
         $this->setNome($nome);
         $this->setEmail($email);
         $this->setSenha($senha);
-        $this->setRole($roleId);
+        $this->setRole($roleid);
     }
 
     private function setNome(string $nome)
@@ -77,20 +77,20 @@ class Usuario
         $this->senha = password_hash($senha, PASSWORD_BCRYPT);
     }
 
-    private function setRole(int $roleId)
+    private function setRole(int $roleid)
     {
-        if ($roleId <= 0) {
+        if ($roleid <= 0) {
             throw new HttpException("Role inválida", 400);
         }
 
-        $this->roleId = $roleId;
+        $this->roleid = $roleid;
     }
 
-    // 👇 getters (somente leitura)
+    //get (somente leitura)
     public function getNome(): string { return $this->nome; }
     public function getEmail(): string { return $this->email; }
     public function getSenha(): string { return $this->senha; }
-    public function getRoleId(): int { return $this->roleId; }
+    public function getRoleId(): int { return $this->roleid; }
 }
 
 ?>

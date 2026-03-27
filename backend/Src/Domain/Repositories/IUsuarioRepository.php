@@ -2,13 +2,13 @@
 
 namespace Src\Domain\Repositories;
 
-interface UsuarioRepositoryInterface
+interface IUsuarioRepository
 {
     public function create(
         string $nome,
         string $email,
         string $senha,
-        int $roleId
+        int $roleid
     ): void;
 
     public function findByEmail(string $email): ?array;

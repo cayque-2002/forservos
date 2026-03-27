@@ -7,25 +7,25 @@ use Src\Middleware\MiddlewareHandler;
 use Src\Core\ExceptionHandler;
 
 
-set_exception_handler(function ($e) {
+// Exception global
+set_exception_handler([ExceptionHandler::class, 'handle']);
 
-    if ($e instanceof \Src\Core\Exceptions\HttpException) {
-        \Src\Core\Response::error($e->getMessage(), $e->getCode());
-        return;
-    }
-
-    \Src\Core\Response::error("Erro interno", 500);
-});
-
-// set_exception_handler([ExceptionHandler::class, 'handle']);
-
+// Headers
 header('Content-Type: application/json');
+
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
 
 // URL e método
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Mapeamento de rotas
+// Rotas
 $routes = [
     'usuario' => [
         'create' => [
@@ -45,40 +45,38 @@ $routes = [
     ]
 ];
 
-// Quebra da URL
+// Quebra URL
 $segments = explode('/', trim($uri, '/'));
 
 $controllerKey = strtolower($segments[0] ?? '');
 $action = $segments[1] ?? null;
 
-// Validação básica
+// validação
 if (!$controllerKey || !$action) {
     http_response_code(404);
     echo json_encode(["error" => "Rota inválida"]);
     exit;
 }
 
-// Valida rota existente
 if (!isset($routes[$controllerKey][$action])) {
     http_response_code(404);
     echo json_encode(["error" => "Rota não encontrada"]);
     exit;
 }
 
-// Valida método HTTP
 $route = $routes[$controllerKey][$action];
 
-$expectedMethod = $route['method'];
-$middlewares = $route['middlewares'];
-
-if ($method !== $expectedMethod) {
+// método errado
+if ($method !== $route['method']) {
     http_response_code(405);
     echo json_encode(["error" => "Método não permitido"]);
     exit;
 }
-MiddlewareHandler::handle($middlewares);
 
-// Monta controller
+// Middlewares
+MiddlewareHandler::handle($route['middlewares']);
+
+// Controller
 $controllerName = ucfirst($controllerKey);
 $controllerClass = "Src\\Controllers\\{$controllerName}Controller";
 
@@ -88,14 +86,36 @@ if (!class_exists($controllerClass)) {
     exit;
 }
 
-$controller = new $controllerClass();
+// DI MANUAL
+switch ($controllerClass) {
 
-// Segurança extra
+    case "Src\\Controllers\\AuthController":
+        $controller = new $controllerClass(
+            new \Src\Services\AuthService(
+                new \Src\Infrastructure\Repositories\UsuarioRepository()
+            )
+        );
+        break;
+
+    case "Src\\Controllers\\UsuarioController":
+        $controller = new $controllerClass(
+            new \Src\Services\UsuarioService(
+                new \Src\Infrastructure\Repositories\UsuarioRepository()
+            )
+        );
+        break;
+
+    default:
+        $controller = new $controllerClass();
+        break;
+}
+
+//valida ação
 if (!method_exists($controller, $action)) {
     http_response_code(404);
     echo json_encode(["error" => "Ação não encontrada"]);
     exit;
 }
 
-// Executa ação
+//Executa
 $controller->$action();
