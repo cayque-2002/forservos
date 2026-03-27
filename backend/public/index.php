@@ -166,7 +166,7 @@ $routes = [
         ],
         'list' => [
             'method' => 'GET',
-            'middlewares' => ['auth', 'role:admin,user']
+            'middlewares' => ['auth']
         ],
         'update' => [
             'method' => 'PUT',
@@ -176,6 +176,39 @@ $routes = [
             'method' => 'DELETE',
             'middlewares' => ['auth', 'role:admin']
         ]
+    ],
+    'cliente' => [
+    '_controller' => 'Src\\Controllers\\ClienteController',
+    'create' => ['method' => 'POST', 'middlewares' => ['auth', 'role:admin,user']],
+    'list'   => ['method' => 'GET', 'middlewares' => ['auth']],
+    'update' => ['method' => 'PUT', 'middlewares' => ['auth', 'role:admin,user']],
+    'delete' => ['method' => 'DELETE', 'middlewares' => ['auth', 'role:admin']]
+    ],
+    'endereco' => [
+        '_controller' => 'Src\\Controllers\\EnderecoController',
+        'create' => ['method' => 'POST', 'middlewares' => ['auth', 'role:admin,user']],
+        'list'   => ['method' => 'GET', 'middlewares' => ['auth']],
+        'update' => ['method' => 'PUT', 'middlewares' => ['auth', 'role:admin,user']],
+        'delete' => ['method' => 'DELETE', 'middlewares' => ['auth', 'role:admin']]
+    ],
+    'produto' => [
+        '_controller' => 'Src\\Controllers\\ProdutoController',
+        'create' => ['method' => 'POST', 'middlewares' => ['auth', 'role:admin']],
+        'list'   => ['method' => 'GET', 'middlewares' => ['auth']],
+        'update' => ['method' => 'PUT', 'middlewares' => ['auth', 'role:admin']],
+        'delete' => ['method' => 'DELETE', 'middlewares' => ['auth', 'role:admin']]
+    ],
+    'ordemservico' => [
+        '_controller' => 'Src\\Controllers\\OrdemServicoController',
+        'create'        => ['method' => 'POST', 'middlewares' => ['auth']],
+        'list'          => ['method' => 'GET', 'middlewares' => ['auth']],
+        'dashboardHoje' => ['method' => 'GET', 'middlewares' => ['auth']],
+        'update'        => ['method' => 'PUT', 'middlewares' => ['auth']],
+        'delete'        => ['method' => 'DELETE', 'middlewares' => ['auth', 'role:admin']]
+    ],
+    'ordemservicologs' => [
+        '_controller' => 'Src\\Controllers\\OrdemServicoLogController',
+        'listByOrdemServico' => ['method' => 'GET', 'middlewares' => ['auth']]
     ],
     'auth' => [
         '_controller' => 'Src\\Controllers\\AuthController',
@@ -302,6 +335,48 @@ switch ($controllerClass) {
         $controller = new $controllerClass(
             new \Src\Services\TipoPrazoGarantiaService(
                 new \Src\Infrastructure\Repositories\TipoPrazoGarantiaRepository()
+            )
+        );
+        break;
+    
+    case "Src\\Controllers\\ClienteController":
+        $controller = new $controllerClass(
+            new \Src\Services\ClienteService(
+                new \Src\Infrastructure\Repositories\ClienteRepository()
+            )
+        );
+    break;
+
+    case "Src\\Controllers\\EnderecoController":
+        $controller = new $controllerClass(
+            new \Src\Services\EnderecoService(
+                new \Src\Infrastructure\Repositories\EnderecoRepository()
+            )
+        );
+        break;
+
+    case "Src\\Controllers\\ProdutoController":
+        $controller = new $controllerClass(
+            new \Src\Services\ProdutoService(
+                new \Src\Infrastructure\Repositories\ProdutoRepository()
+            )
+        );
+        break;
+
+    case "Src\\Controllers\\OrdemServicoController":
+        $controller = new $controllerClass(
+            new \Src\Services\OrdemServicoService(
+                new \Src\Infrastructure\Repositories\OrdemServicoRepository(),
+                new \Src\Infrastructure\Repositories\OrdemServicoLogRepository(),
+                new \Src\Infrastructure\Repositories\ClienteRepository()
+            )
+        );
+        break;
+
+    case "Src\\Controllers\\OrdemServicoLogController":
+        $controller = new $controllerClass(
+            new \Src\Services\OrdemServicoLogService(
+                new \Src\Infrastructure\Repositories\OrdemServicoLogRepository()
             )
         );
         break;
