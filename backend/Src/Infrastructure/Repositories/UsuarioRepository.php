@@ -99,7 +99,7 @@ class UsuarioRepository implements IUsuarioRepository
     }
 
     public function delete(int $id): void
-    {
+    {   
         $stmt = $this->conn->prepare("
             DELETE FROM usuarios
             WHERE id = ?
