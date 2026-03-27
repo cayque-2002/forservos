@@ -26,7 +26,7 @@ class Usuario
     private function setNome(string $nome)
     {
         if (empty($nome)) {
-            throw new HttpException("Nome é obrigatório", 400);
+            throw new \Src\Core\HttpException("Nome é obrigatório", 400);
         }
 
         $this->nome = $nome;
@@ -35,7 +35,7 @@ class Usuario
     private function setEmail(string $email)
     {
         if (empty($email)) {
-            throw new HttpException("Email é obrigatório", 400);
+            throw new \Src\Core\HttpException("Email é obrigatório", 400);
         }
 
         $this->email = $email;
@@ -44,7 +44,7 @@ class Usuario
     private function setSenha(string $senha)
     {
         if (empty($senha)) {
-            throw new HttpException("Senha é obrigatória", 400);
+            throw new \Src\Core\HttpException("Senha é obrigatória", 400);
         }
 
         $this->senha = $senha;
@@ -53,7 +53,7 @@ class Usuario
     private function setValidaEmail(string $email)
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new HttpException("Email inválido", 400);
+            throw new \Src\Core\HttpException("Email inválido", 400);
         }
 
         $this->email = $email;
@@ -62,16 +62,16 @@ class Usuario
     private function setValidaSenha(string $senha)
     {
         if (strlen($senha) < 8) {
-            throw new HttpException("Senha deve ter no mínimo 6 caracteres", 400);
+            throw new \Src\Core\HttpException("Senha deve ter no mínimo 6 caracteres", 400);
         }
         if (!preg_match('/[A-Z]/', $senha)){
-            throw new HttpException("A senha deve ter no mínimo uma letra maiúscula.",400);
+            throw new \Src\Core\HttpException("A senha deve ter no mínimo uma letra maiúscula.",400);
         }
         if (!preg_match('/\d/', $senha)){
-            throw new HttpException("A senha deve ter no mínimo um número.",400);
+            throw new \Src\Core\HttpException("A senha deve ter no mínimo um número.",400);
         }
         if (!preg_match('/[\W_]/', $senha)){
-            throw new HttpException("A senha deve ter no mínimo um caractere especial.",400);
+            throw new \Src\Core\HttpException("A senha deve ter no mínimo um caractere especial.",400);
         }
 
         $this->senha = password_hash($senha, PASSWORD_BCRYPT);
@@ -80,7 +80,7 @@ class Usuario
     private function setRole(int $roleid)
     {
         if ($roleid <= 0) {
-            throw new HttpException("Role inválida", 400);
+            throw new \Src\Core\HttpException("Role inválida", 400);
         }
 
         $this->roleid = $roleid;

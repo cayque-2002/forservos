@@ -33,7 +33,7 @@ $routes = [
         ],
         'list' => [
             'method' => 'GET',
-            'middlewares' => ['auth', 'role:admin']
+            'middlewares' => ['auth', 'role:admin,user']
         ],
         'update' => [
             'method' => 'PUT',
@@ -52,7 +52,26 @@ $routes = [
         ],
         'list' => [
             'method' => 'GET',
+            'middlewares' => ['auth', 'role:admin,user']
+        ],
+        'update' => [
+            'method' => 'PUT',
             'middlewares' => ['auth', 'role:admin']
+        ],
+        'delete' => [
+            'method' => 'DELETE',
+            'middlewares' => ['auth', 'role:admin']
+        ]
+    ],
+    'estado' => [
+        '_controller' => 'Src\\Controllers\\EstadoController',
+        'create' => [
+            'method' => 'POST',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'list' => [
+            'method' => 'GET',
+            'middlewares' => ['auth', 'role:admin,user']
         ],
         'update' => [
             'method' => 'PUT',
@@ -140,6 +159,14 @@ switch ($controllerClass) {
         $controller = new $controllerClass(
             new \Src\Services\RoleUsuariosService(
                 new \Src\Infrastructure\Repositories\RoleUsuariosRepository()
+            )
+        );
+        break;
+
+    case "Src\\Controllers\\EstadoController":
+        $controller = new $controllerClass(
+            new \Src\Services\EstadoService(
+                new \Src\Infrastructure\Repositories\EstadoRepository()
             )
         );
         break;

@@ -31,10 +31,10 @@ class UsuarioRepository implements IUsuarioRepository
             SELECT u.*, r.nome_role
             FROM usuarios u
             JOIN role_usuarios r ON r.id = u.roleid
-            WHERE u.email = ?
+            WHERE u.email ILIKE ?
         ");
 
-        $stmt->execute([$email]);
+        $stmt->execute(["%{$email}%"]);
 
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
