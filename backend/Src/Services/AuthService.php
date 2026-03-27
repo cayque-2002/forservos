@@ -35,7 +35,7 @@ class AuthService
             'email' => $user['email'],
             'role' => $user['nome_role'],
             'iat' => time(),
-            'exp' => time() + 3600
+            'exp' => time() + 86400
         ];
 
         return JWT::encode($payload, $this->secret, 'HS256');
