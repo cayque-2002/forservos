@@ -82,6 +82,25 @@ $routes = [
             'middlewares' => ['auth', 'role:admin']
         ]
     ],
+    'cidade' => [
+        '_controller' => 'Src\\Controllers\\CidadeController',
+        'create' => [
+            'method' => 'POST',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'list' => [
+            'method' => 'GET',
+            'middlewares' => ['auth', 'role:admin,user']
+        ],
+        'update' => [
+            'method' => 'PUT',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'delete' => [
+            'method' => 'DELETE',
+            'middlewares' => ['auth', 'role:admin']
+        ]
+    ],
     'auth' => [
         '_controller' => 'Src\\Controllers\\AuthController',
         'login' => [
@@ -167,6 +186,14 @@ switch ($controllerClass) {
         $controller = new $controllerClass(
             new \Src\Services\EstadoService(
                 new \Src\Infrastructure\Repositories\EstadoRepository()
+            )
+        );
+        break;
+    
+    case "Src\\Controllers\\CidadeController":
+        $controller = new $controllerClass(
+            new \Src\Services\CidadeService(
+                new \Src\Infrastructure\Repositories\CidadeRepository()
             )
         );
         break;
