@@ -6,17 +6,11 @@ require_once __DIR__ . '/../src/Config/env.php';
 use Src\Middleware\MiddlewareHandler;
 use Src\Core\ExceptionHandler;
 
-
 // Exception global
 set_exception_handler([ExceptionHandler::class, 'handle']);
 
-//debug compilation dump
-// var_dump(class_exists(\Src\Infrastructure\Repositories\RoleUsuariosRepository::class));
-// die();
-
 // Headers
 header('Content-Type: application/json');
-
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -32,6 +26,26 @@ $method = $_SERVER['REQUEST_METHOD'];
 // Rotas
 $routes = [
     'usuario' => [
+        '_controller' => 'Src\\Controllers\\UsuarioController',
+        'create' => [
+            'method' => 'POST',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'list' => [
+            'method' => 'GET',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'update' => [
+            'method' => 'PUT',
+            'middlewares' => ['auth', 'role:admin']
+        ],
+        'delete' => [
+            'method' => 'DELETE',
+            'middlewares' => ['auth', 'role:admin']
+        ]
+    ],
+    'roleusuarios' => [
+        '_controller' => 'Src\\Controllers\\RoleUsuariosController',
         'create' => [
             'method' => 'POST',
             'middlewares' => ['auth', 'role:admin']
@@ -50,6 +64,7 @@ $routes = [
         ]
     ],
     'auth' => [
+        '_controller' => 'Src\\Controllers\\AuthController',
         'login' => [
             'method' => 'POST',
             'middlewares' => []
@@ -67,6 +82,12 @@ $action = $segments[1] ?? null;
 if (!$controllerKey || !$action) {
     http_response_code(404);
     echo json_encode(["error" => "Rota inválida"]);
+    exit;
+}
+
+if (!isset($routes[$controllerKey])) {
+    http_response_code(404);
+    echo json_encode(["error" => "Controller de rota não encontrado"]);
     exit;
 }
 
@@ -89,8 +110,7 @@ if ($method !== $route['method']) {
 MiddlewareHandler::handle($route['middlewares']);
 
 // Controller
-$controllerName = ucfirst($controllerKey);
-$controllerClass = "Src\\Controllers\\{$controllerName}Controller";
+$controllerClass = $routes[$controllerKey]['_controller'];
 
 if (!class_exists($controllerClass)) {
     http_response_code(404);
@@ -100,7 +120,6 @@ if (!class_exists($controllerClass)) {
 
 // DI MANUAL
 switch ($controllerClass) {
-
     case "Src\\Controllers\\AuthController":
         $controller = new $controllerClass(
             new \Src\Services\AuthService(
@@ -117,26 +136,27 @@ switch ($controllerClass) {
         );
         break;
 
-    // case "Src\\Controllers\\RoleUsuariosController":
-    //     $controller = new $controllerClass(
-    //         new \Src\Services\RoleUsuariosService(
-    //             new \Src\Infrastructure\Repositories\RoleUsuariosRepository()
-    //         )
-    //     );
-    //     break;
-
+    case "Src\\Controllers\\RoleUsuariosController":
+        $controller = new $controllerClass(
+            new \Src\Services\RoleUsuariosService(
+                new \Src\Infrastructure\Repositories\RoleUsuariosRepository()
+            )
+        );
+        break;
 
     default:
         $controller = new $controllerClass();
         break;
 }
 
-//valida ação
+// valida ação
 if (!method_exists($controller, $action)) {
     http_response_code(404);
     echo json_encode(["error" => "Ação não encontrada"]);
     exit;
 }
 
-//Executa
+// Executa
 $controller->$action();
+
+?>
