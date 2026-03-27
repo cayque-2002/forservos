@@ -47,7 +47,7 @@ class Usuario
             throw new \Src\Core\HttpException("Senha é obrigatória", 400);
         }
 
-        $this->senha = $senha;
+        $this->senha = password_hash($senha, PASSWORD_BCRYPT);
     }
 
     private function setValidaEmail(string $email)
