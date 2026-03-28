@@ -1,207 +1,199 @@
-# 🚀 ForServos - Sistema de Ordens de Serviço
+# ForServOs - Sistema de Ordens de Serviço
 
-## 📌 Descrição
+## Descrição
 
-Sistema backend desenvolvido em PHP orientado a objetos para gerenciamento de ordens de serviço, clientes, produtos e usuários.
+O **ForServOs** é um sistema para gerenciamento de ordens de serviço, clientes, produtos, usuários e entidades auxiliares.
 
-O sistema segue princípios de API RESTful, com autenticação via JWT, controle de acesso por roles e organização baseada em conceitos de DDD.
+O projeto foi desenvolvido com foco principal em **backend**, utilizando **PHP orientado a objetos**, arquitetura em camadas inspirada em **DDD**, autenticação com **JWT** e controle de acesso por **roles**.
 
----
-
-## 🛠️ Tecnologias utilizadas
-
-* PHP 8+
-* PostgreSQL
-* PDO (Prepared Statements)
-* JWT (firebase/php-jwt)
-* PHPUnit (Testes unitários)
-* Dotenv
+Também inclui um **frontend em HTML estático**, utilizado para demonstrar as telas administrativas do sistema.
 
 ---
 
-## 📁 Estrutura do projeto
+## Tecnologias utilizadas
 
-```
-src/
-├── Controllers/
-├── Services/
-├── Domain/
-│   ├── Entities/
-│   └── Repositories/
-├── Infrastructure/
-│   └── Repositories/
-├── Middleware/
-├── Core/
-└── Database/
-```
+### Backend
+- PHP 8+
+- PostgreSQL
+- PDO
+- JWT (firebase/php-jwt)
+- Dotenv (vlucas/phpdotenv)
+- PHPUnit
 
-* **Controllers** → entrada da API
-* **Services** → regras de negócio
-* **Domain** → entidades e interfaces
-* **Infrastructure** → acesso ao banco
-* **Middleware** → autenticação e autorização
-* **Core** → request, response, exceptions
+### Frontend
+- HTML
+- CSS
+- JavaScript
 
 ---
 
-## 🔐 Autenticação
+## Estrutura do projeto
+forservos/
+├── backend/
+│ ├── Src/
+│ ├── public/
+│ ├── tests/
+│ ├── composer.json
+│ └── .env.example
+├── frontend/
+│ ├── login.html
+│ ├── dashboard.html
+│ ├── usuarios.html
+│ ├── roleusuarios.html
+│ └── demais telas
+└── README.md
 
-A autenticação é feita via JWT.
+
+---
+
+## Organização do backend
+
+- `Src/Controllers` → controle das requisições
+- `Src/Services` → regras de negócio
+- `Src/Domain` → entidades e contratos
+- `Src/Infrastructure` → acesso a dados
+- `Src/Middleware` → autenticação e autorização
+- `Src/Core` → base da aplicação (request, response, exceptions)
+
+---
+
+## Funcionalidades
+
+- Autenticação com JWT
+- Cadastro de usuários
+- Controle de acesso por roles
+- CRUD de clientes
+- CRUD de produtos
+- CRUD de endereços
+- Criação de ordens de serviço
+- Registro de logs
+
+---
+
+## Controle de acesso
 
 ### Login
-
-```
-POST /auth/login
-```
+`POST /auth/login`
 
 ### Retorno
 
-```json
 {
   "token": "jwt_token_aqui"
 }
-```
 
-### Uso
-
-Enviar no header:
-
-```
+### Uso do token
 Authorization: Bearer {token}
-```
 
----
+### Perfis
+admin
+user
 
-## 👥 Controle de acesso
+### Middlewares
+auth → valida JWT
+role → valida permissões
 
-O sistema utiliza roles:
+### Regra de negócio
+## Ordem de serviço
 
-* **admin**
-* **user**
+Ao criar uma ordem:
 
-Rotas protegidas utilizam middleware:
+busca cliente pelo CPF
+cria cliente automaticamente caso não exista
+cria a ordem vinculada
+gera log automaticamente
 
-* `auth` → valida token
-* `role` → valida permissões
+### Testes
 
----
+Executar no diretório backend:
 
-## 📦 Funcionalidades principais
-
-* Cadastro de usuários
-* Autenticação com JWT
-* CRUD de clientes, produtos e endereços
-* Criação de ordens de serviço
-* Registro de logs de alterações
-
----
-
-## 🔥 Regra de negócio importante
-
-### Ordem de Serviço
-
-Ao criar uma ordem de serviço:
-
-* O sistema busca o cliente pelo **CPF**
-* Caso não exista:
-
-  * O cliente é criado automaticamente
-* A OS é criada com o cliente vinculado
-* Um log é gerado automaticamente
-
----
-
-## 🧪 Testes unitários
-
-O projeto possui testes unitários utilizando PHPUnit.
-
-### Executar testes
-
-```bash
 vendor/bin/phpunit
-```
 
-### Cobertura atual
+## Cobertura:
 
-* UsuarioService
-* ClienteService
-* AuthService
-* OrdemServicoService
+UsuarioService
+ClienteService
+AuthService
+OrdemServicoService
+Segurança
+SQL Injection
+uso de PDO com prepared statements
+XSS
+backend retorna JSON
+sanitização é responsabilidade do frontend
 
----
 
-## 🔒 Segurança
+### Como rodar o projeto
 
-### SQL Injection
-
-* Uso de **Prepared Statements (PDO)**
-* Nenhuma query utiliza concatenação direta de parâmetros
-
-### XSS
-
-* Backend retorna apenas JSON
-* Dados devem ser renderizados com segurança no frontend
-
----
-
-## ⚙️ Como rodar o projeto
-
-### 1. Clonar repositório
-
-```bash
-git clone <repo>
+1. Clonar
+git clone https://github.com/cayque-2002/forservos.git
+cd forservos
+2. Backend
 cd backend
-```
-
-### 2. Instalar dependências
-
-```bash
 composer install
-```
 
-### 3. Configurar `.env`
+### Criar arquivo de ambiente:
 
-```env
-DB_HOST=localhost
-DB_NAME=forservos
-DB_USER=postgres
-DB_PASS=senha
+cp .env.example .env
 
-JWT_SECRET=sua_chave_super_secreta
-JWT_EXPIRATION=3600
-```
+### Configurar .env:
 
-### 4. Rodar servidor
+APP_NAME=ForServOs
+APP_ENV=local
 
-```bash
+DB_CONNECTION=pgsql
+DB_HOST=seu_host
+DB_PORT=5432
+DB_DATABASE=seu_database
+DB_USERNAME=seu_usuario
+DB_PASSWORD=sua_senha
+
+JWT_SECRET=sua_chave_aqui
+JWT_EXPIRATION=86400
+
+### Subir servidor:
+
 php -S localhost:8000 -t public
-```
 
----
+### Banco de dados
 
-## 📬 API Collection
+O projeto utiliza PostgreSQL.
 
-O projeto possui uma collection do Postman com todas as rotas organizadas.
+É necessário:
 
-Sugestão de uso:
+criar o banco
+executar os scripts SQL (caso incluídos)
 
-* Importar a collection
-* Configurar variável `base_url`
-* Utilizar login para obter token
+### Frontend
 
----
+O frontend é estático.
 
-## 📈 Melhorias futuras
+Abra os arquivos da pasta frontend/ no navegador ou use Live Server.
 
-* Swagger/OpenAPI
-* Testes de integração
-* Paginação nas listagens
-* Refresh token
-* Logs mais detalhados
+## Exemplos:
 
----
+login.html
+dashboard.html
+usuarios.html
+roleusuarios.html
+API
 
-## 👨‍💻 Autor
+### Fluxo de uso:
+
+Fazer login
+Copiar token
+Enviar no header Authorization
+Consumir endpoints protegidos
+
+### Observações
+
+O projeto não inclui credenciais reais
+O .env.example serve como base de configuração
+As variáveis devem ser ajustadas conforme ambiente local
+
+### Documentação API's
+Tem uma collection para importar no postman no projeto, nela vai ter todos os endpoints para testes com seus exemplos de requisição;
+
+### Autor
 
 Cayque Guilherme
-Desenvolvedor Backend
+Desenvolvedor com foco em backend
