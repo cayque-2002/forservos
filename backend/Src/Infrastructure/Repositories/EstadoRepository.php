@@ -64,6 +64,7 @@ class EstadoRepository implements IEstadoRepository
             SELECT 
                 e.id,
                 e.nome_estado,
+                e.uf,
                 e.data_criacao
             FROM estado e
             ORDER BY e.id DESC

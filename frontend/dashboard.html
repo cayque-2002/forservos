@@ -2,24 +2,1332 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForServOS - Dashboard</title>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        :root {
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #cbd5e1;
+            --page-bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-soft: #e2e8f0;
+            --blue: #2563eb;
+            --yellow-bg: #fef3c7;
+            --yellow-text: #d97706;
+            --blue-bg: #dbeafe;
+            --blue-text: #2563eb;
+            --green-bg: #dcfce7;
+            --green-text: #16a34a;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--page-bg);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+        }
+
+        .app-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+            color: #fff;
+            padding: 24px 18px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.4);
+            border-radius: 4px;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 28px;
+        }
+
+        .menu-title {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin: 18px 0 10px;
+            font-weight: 600;
+        }
+
+        .menu-link {
+            display: block;
+            padding: 11px 14px;
+            border-radius: 12px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            margin-bottom: 6px;
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .menu-link:hover {
+            background-color: rgba(37, 99, 235, 0.18);
+            color: #fff;
+        }
+
+        .menu-link.active {
+            background-color: rgba(37, 99, 235, 0.25);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .submenu {
+            margin-left: 10px;
+            margin-bottom: 6px;
+        }
+
+        .submenu .menu-link {
+            font-size: 0.92rem;
+            padding: 9px 12px;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .main-content {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            padding: 24px;
+        }
+
+        .topbar {
+            background: #fff;
+            border: 1px solid var(--border-soft);
+            border-radius: 18px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
+        }
+
+        .topbar h1 {
+            font-size: 1.6rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .topbar-user {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .page-header {
+            margin-bottom: 18px;
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .content-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-soft);
+            border-radius: 20px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.05);
+            overflow: hidden;
+        }
+
+        .content-card-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .content-card-title h3 {
+            margin: 0 0 4px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card-title p {
+            margin: 0;
+            color: var(--text-muted);
+        }
+
+        .content-card-body {
+            padding: 24px;
+        }
+
+        .btn-custom-primary {
+            background-color: var(--blue);
+            border: none;
+            color: #fff;
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-weight: 600;
+        }
+
+        .btn-custom-primary:hover {
+            background-color: #1d4ed8;
+            color: #fff;
+        }
+
+        .btn-custom-outline {
+            border: 1px solid #bfdbfe;
+            color: var(--blue);
+            background: #fff;
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-weight: 600;
+        }
+
+        .btn-custom-outline:hover {
+            background: #eff6ff;
+            color: var(--blue);
+        }
+
+        .table thead th {
+            color: #475569;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-bottom-width: 1px;
+        }
+
+        .table td {
+            vertical-align: middle;
+            font-size: 0.95rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pendente {
+            background: var(--yellow-bg);
+            color: var(--yellow-text);
+        }
+
+        .status-atendimento {
+            background: var(--blue-bg);
+            color: var(--blue-text);
+        }
+
+        .status-default {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .summary-card {
+            background: #fff;
+            border: 1px solid var(--border-soft);
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            height: 100%;
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.04);
+        }
+
+        .summary-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .summary-blue {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .summary-yellow {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .summary-green {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .summary-number {
+            font-size: 1.9rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .summary-label {
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .empty-row {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 24px 0 !important;
+        }
+
+        .loading-box {
+            background: #fff;
+            border: 1px solid var(--border-soft);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+            display: none;
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 18px;
+        }
+
+        .modal-header,
+        .modal-footer {
+            border-color: var(--border-soft);
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            min-height: 46px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1e293b;
+        }
+
+        .log-card {
+            border: 1px solid var(--border-soft);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
+            background: #fff;
+        }
+
+        .log-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .log-meta {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .log-pre {
+            background: #f8fafc;
+            border: 1px solid var(--border-soft);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin: 0;
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+            }
+
+            .app-wrapper {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
 </head>
+<body>
 
-<body class="bg-light d-flex align-items-center justify-content-center vh-100">
+<div class="app-wrapper">
+    <aside class="sidebar">
+        <div class="brand">ForServOS</div>
 
-<div class="card p-4 shadow" style="width: 350px;">
-    <h3 class="text-center mb-3">Login</h3>
+        <div class="menu-title">Navegação</div>
+        <a href="dashboard.html" class="menu-link active">Dashboard</a>
+
+        <div class="menu-title">Venda</div>
+        <div class="submenu">
+            <a href="produtos.html" class="menu-link">Produtos</a>
+            <a href="clientes.html" class="menu-link">Clientes</a>
+            <a href="enderecos.html" class="menu-link">Endereços</a>
+        </div>
+
+        <div class="menu-title">Configurações Gerais</div>
+        <div class="submenu">
+            <a href="usuarios.html" class="menu-link">Usuários</a>
+            <a href="roleusuarios.html" class="menu-link">Role_Usuarios</a>
+            <a href="situacaoos.html" class="menu-link">Situações OS</a>
+            <a href="situacaoclientes.html" class="menu-link">Situações Clientes</a>
+            <a href="tipoprazogarantia.html" class="menu-link">Tipo Prazo Garantia</a>
+            <a href="statusproduto.html" class="menu-link">Status Produto</a>
+            <a href="estado.html" class="menu-link">Estado</a>
+            <a href="cidade.html" class="menu-link">Cidade</a>
+        </div>
+
+        <div class="sidebar-footer">
+            <a href="#" id="btnLogout" class="menu-link">Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="topbar">
+            <h1>Dashboard</h1>
+            <div class="topbar-user">
+                <strong id="nomeUsuario">Usuário autenticado</strong>
+            </div>
+        </div>
+
+        <div class="page-header">
+            <h2>Dashboard</h2>
+            <p>Consulte e filtre as ordens de serviço por número, data, situação, cliente ou produto.</p>
+        </div>
+
+        <div id="loadingBox" class="loading-box">
+            Carregando ordens de serviço...
+        </div>
+
+        <div class="content-card mb-4">
+            <div class="content-card-header">
+                <div class="content-card-title">
+                    <h3>Ordens de Serviço - Hoje</h3>
+                    <p>Use os filtros para localizar as ordens de serviço</p>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-custom-primary" id="btnNovaOS">Nova Ordem de Serviço</button>
+                </div>
+            </div>
+
+            <div class="content-card-body">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-2">
+                        <label class="form-label">Nº OS</label>
+                        <input type="number" id="filtroNumOs" class="form-control" placeholder="Ex: 1001">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label">Data</label>
+                        <input type="date" id="filtroData" class="form-control">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label">Situação</label>
+                        <select id="filtroSituacao" class="form-select">
+                            <option value="">Todas</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Cliente</label>
+                        <input type="text" id="filtroCliente" class="form-control" placeholder="Nome do cliente">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Produto</label>
+                        <input type="text" id="filtroProduto" class="form-control" placeholder="Descrição do produto">
+                    </div>
+
+                    <div class="col-12 d-flex gap-2">
+                        <button type="button" id="btnAplicarFiltros" class="btn btn-custom-primary">
+                            Filtrar
+                        </button>
+
+                        <button type="button" id="btnLimparFiltros" class="btn btn-outline-secondary">
+                            Limpar
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle" id="tabelaOrdens">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nº OS</th>
+                                <th>Cliente</th>
+                                <th>Produto</th>
+                                <th>Situação</th>
+                                <th>Data de Criação</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordensBody">
+                            <tr>
+                                <td colspan="7" class="empty-row">Nenhum dado carregado.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <div class="summary-icon summary-blue">EA</div>
+                    <div>
+                        <div class="summary-number" id="totalAtendimento">0</div>
+                        <p class="summary-label">Em atendimento</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <div class="summary-icon summary-yellow">PE</div>
+                    <div>
+                        <div class="summary-number" id="totalPendentes">0</div>
+                        <p class="summary-label">Pendentes</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <div class="summary-icon summary-green">OS</div>
+                    <div>
+                        <div class="summary-number" id="totalHoje">0</div>
+                        <p class="summary-label">Total de OS hoje</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
 
+<!-- Modal Criar / Editar OS -->
+<div class="modal fade" id="osModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form id="osForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="osModalTitle">Nova Ordem de Serviço</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" id="osId">
+                    <input type="hidden" id="modoEdicao">
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <div class="section-title">Dados da Ordem de Serviço</div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Nº OS</label>
+                            <input type="number" id="numOs" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Situação OS</label>
+                            <select id="situacaoOsId" class="form-select" required>
+                                <option value="">Selecione</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Produto</label>
+                            <select id="produtoId" class="form-select" required>
+                                <option value="">Selecione</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Cidade</label>
+                            <select id="cidadeId" class="form-select" required>
+                                <option value="">Selecione</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Observação</label>
+                            <textarea id="observacao" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row g-3" id="blocoClienteCreate">
+                        <div class="col-12">
+                            <div class="section-title">Dados do Cliente</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Nome do Cliente</label>
+                            <input type="text" id="nomeCliente" class="form-control">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">CPF</label>
+                            <input type="text" id="cpfCliente" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Situação Cliente</label>
+                            <select id="situacaoClienteId" class="form-select">
+                                <option value="">Selecione</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Endereço</label>
+                            <select id="enderecoId" class="form-select">
+                                <option value="">Selecione</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Número Endereço</label>
+                            <input type="number" id="numeroEndereco" class="form-control">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Complemento Cliente</label>
+                            <input type="text" id="complementoCliente" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 d-none" id="blocoClienteEdit">
+                        <div class="col-12">
+                            <div class="section-title">Dados do Cliente na Edição</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Cliente</label>
+                            <select id="clienteIdEdit" class="form-select">
+                                <option value="">Selecione</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Logs -->
+<div class="modal fade" id="logsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Logs da Ordem de Serviço</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="logsContainer">
+                    <p class="text-muted mb-0">Nenhum log carregado.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-const API_URL = "http://localhost:8000";
-    
+    const API_URL = "http://localhost:8000";
+    const token = localStorage.getItem("token");
+
+    let ordens = [];
+    let ordensFiltradas = [];
+    let clientes = [];
+    let produtos = [];
+    let cidades = [];
+    let situacoesOs = [];
+    let situacoesClientes = [];
+    let enderecos = [];
+    let ordemSelecionadaId = null;
+
+    const osModal = new bootstrap.Modal(document.getElementById("osModal"));
+    const logsModal = new bootstrap.Modal(document.getElementById("logsModal"));
+
+    if (!token) {
+        window.location.href = "login.html";
+    }
+
+    $(document).ready(function () {
+        preencherNomeUsuario();
+        carregarCombos();
+        carregarDashboard();
+
+        $("#btnAplicarFiltros").on("click", function () {
+            aplicarFiltros();
+        });
+
+        $("#btnLimparFiltros").on("click", function () {
+            limparFiltros();
+        });
+
+        $("#filtroNumOs, #filtroData, #filtroCliente, #filtroProduto").on("keyup change", function () {
+            aplicarFiltros();
+        });
+
+        $("#filtroSituacao").on("change", function () {
+            aplicarFiltros();
+        });
+
+        $("#btnLogout").on("click", function (e) {
+            e.preventDefault();
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+        });
+
+        $("#btnNovaOS").on("click", function () {
+            abrirModalCriacaoOS();
+        });
+
+        $("#btnVerLogsSelecionado").on("click", function () {
+            if (!ordemSelecionadaId) {
+                alert("Selecione uma ordem pelos botões de logs da tabela.");
+                return;
+            }
+            abrirModalLogs(ordemSelecionadaId);
+        });
+
+        $("#osForm").on("submit", function (e) {
+            e.preventDefault();
+
+            const modoEdicao = $("#modoEdicao").val() === "true";
+
+            if (modoEdicao) {
+                atualizarOS();
+            } else {
+                criarOS();
+            }
+        });
+    });
+
+    function carregarCombos() {
+        carregarProdutos();
+        carregarCidades();
+        carregarSituacoesOs();
+        carregarSituacoesClientes();
+        carregarEnderecos();
+        carregarClientes();
+    }
+
+    function preencherNomeUsuario() {
+        const payload = parseJwt(token);
+
+        if (payload && payload.email) {
+            $("#nomeUsuario").text(payload.email);
+        }
+    }
+
+    function carregarDashboard() {
+        $("#loadingBox").show();
+
+        $.ajax({
+            url: API_URL + "/ordemservico/dashboardHoje",
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            success: function (response) {
+                if (!response.success) {
+                    preencherTabela([]);
+                    atualizarResumo([]);
+                    return;
+                }
+
+                ordens = response.data || [];
+                preencherFiltroSituacao(ordens);
+                aplicarFiltros();
+            },
+            error: function (xhr) {
+                if (xhr.status === 401) {
+                    localStorage.removeItem("token");
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                ordens = [];
+                ordensFiltradas = [];
+                preencherTabela([]);
+                atualizarResumo([]);
+                alert("Não foi possível carregar o dashboard.");
+            },
+            complete: function () {
+                $("#loadingBox").hide();
+            }
+        });
+    }
+
+    function carregarClientes() {
+        $.ajax({
+            url: API_URL + "/cliente/list",
+            method: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                clientes = response.data || [];
+                preencherSelectClientes();
+            }
+        });
+    }
+
+    function carregarProdutos() {
+        $.ajax({
+            url: API_URL + "/produto/list",
+            method: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                produtos = response.data || [];
+                preencherSelectProdutos();
+            }
+        });
+    }
+
+    function carregarCidades() {
+        $.ajax({
+            url: API_URL + "/cidade/list",
+            method: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                cidades = response.data || [];
+                preencherSelectCidades();
+            }
+        });
+    }
+
+    function carregarSituacoesOs() {
+        $.ajax({
+            url: API_URL + "/situacaoos/list",
+            method: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                situacoesOs = response.data || [];
+                preencherSelectSituacoesOs();
+            }
+        });
+    }
+
+    function carregarSituacoesClientes() {
+        $.ajax({
+            url: API_URL + "/situacaoclientes/list",
+            method: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                situacoesClientes = response.data || [];
+                preencherSelectSituacoesClientes();
+            }
+        });
+    }
+
+    function carregarEnderecos() {
+        $.ajax({
+            url: API_URL + "/endereco/list",
+            method: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            success: function (response) {
+                enderecos = response.data || [];
+                preencherSelectEnderecos();
+            }
+        });
+    }
+
+    function preencherSelectClientes() {
+        const $select = $("#clienteIdEdit");
+        $select.empty().append(`<option value="">Selecione</option>`);
+
+        clientes.forEach(function (cliente) {
+            $select.append(`<option value="${cliente.id}">${cliente.nome_cliente} - ${cliente.cpf}</option>`);
+        });
+    }
+
+    function preencherSelectProdutos() {
+        const $select = $("#produtoId");
+        $select.empty().append(`<option value="">Selecione</option>`);
+
+        produtos.forEach(function (produto) {
+            $select.append(`<option value="${produto.id}">${produto.descricao_produto}</option>`);
+        });
+    }
+
+    function preencherSelectCidades() {
+        const $select = $("#cidadeId");
+        $select.empty().append(`<option value="">Selecione</option>`);
+
+        cidades.forEach(function (cidade) {
+            $select.append(`<option value="${cidade.id}">${cidade.nome_cidade} - ${cidade.uf}</option>`);
+        });
+    }
+
+    function preencherSelectSituacoesOs() {
+        const $select = $("#situacaoOsId");
+        $select.empty().append(`<option value="">Selecione</option>`);
+
+        situacoesOs.forEach(function (situacao) {
+            $select.append(`<option value="${situacao.id}">${situacao.descricao_situacao_os}</option>`);
+        });
+    }
+
+    function preencherSelectSituacoesClientes() {
+        const $select = $("#situacaoClienteId");
+        $select.empty().append(`<option value="">Selecione</option>`);
+
+        situacoesClientes.forEach(function (situacao) {
+            $select.append(`<option value="${situacao.id}">${situacao.descricao_situacao}</option>`);
+        });
+    }
+
+    function preencherSelectEnderecos() {
+        const $select = $("#enderecoId");
+        $select.empty().append(`<option value="">Selecione</option>`);
+
+        enderecos.forEach(function (endereco) {
+            const texto = `${endereco.logradouro ?? ""} - ${endereco.nome_cidade ?? ""}/${endereco.uf ?? ""}`;
+            $select.append(`<option value="${endereco.id}">${texto}</option>`);
+        });
+    }
+
+    function preencherTabela(ordens) {
+        const $body = $("#ordensBody");
+        $body.empty();
+
+        if (!ordens.length) {
+            $body.append(`
+                <tr>
+                    <td colspan="7" class="empty-row">Nenhuma ordem de serviço encontrada para hoje.</td>
+                </tr>
+            `);
+            return;
+        }
+
+        ordens.forEach(function (ordem, index) {
+            const numeroOs = ordem.numos ?? "-";
+            const cliente = ordem.nome_cliente ?? "-";
+            const produto = ordem.descricao_produto ?? "-";
+            const situacao = ordem.descricao_situacao_os ?? "-";
+            const dataCriacao = formatarData(ordem.data_criacao);
+            const classeStatus = getClasseStatus(situacao);
+
+            $body.append(`
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${numeroOs}</td>
+                    <td>${cliente}</td>
+                    <td>${produto}</td>
+                    <td><span class="status-badge ${classeStatus}">${situacao}</span></td>
+                    <td>${dataCriacao}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="abrirModalEdicaoOS(${ordem.id})">Editar</button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="abrirModalLogs(${ordem.id})">Logs</button>
+                    </td>
+                </tr>
+            `);
+        });
+    }
+
+    function atualizarResumo(ordens) {
+        let pendentes = 0;
+        let atendimento = 0;
+
+        ordens.forEach(function (ordem) {
+            const situacao = (ordem.descricao_situacao_os || "").toLowerCase();
+
+            if (situacao === "pendente") pendentes++;
+            if (situacao === "em atendimento") atendimento++;
+        });
+
+        $("#totalPendentes").text(pendentes);
+        $("#totalAtendimento").text(atendimento);
+        $("#totalHoje").text(ordens.length);
+    }
+
+    function abrirModalCriacaoOS() {
+        $("#osModalTitle").text("Nova Ordem de Serviço");
+        $("#modoEdicao").val("false");
+        $("#osId").val("");
+        $("#numOs").val("");
+        $("#situacaoOsId").val("");
+        $("#produtoId").val("");
+        $("#cidadeId").val("");
+        $("#observacao").val("");
+        $("#nomeCliente").val("");
+        $("#cpfCliente").val("");
+        $("#situacaoClienteId").val("");
+        $("#enderecoId").val("");
+        $("#numeroEndereco").val("");
+        $("#complementoCliente").val("");
+        $("#clienteIdEdit").val("");
+
+        $("#blocoClienteCreate").removeClass("d-none");
+        $("#blocoClienteEdit").addClass("d-none");
+
+        osModal.show();
+    }
+
+    function abrirModalEdicaoOS(id) {
+        const ordem = ordens.find(o => Number(o.id) === Number(id));
+        if (!ordem) {
+            alert("Ordem não encontrada na listagem atual.");
+            return;
+        }
+
+        $("#osModalTitle").text("Editar Ordem de Serviço");
+        $("#modoEdicao").val("true");
+        $("#osId").val(ordem.id);
+        $("#numOs").val(ordem.numos ?? "");
+        $("#situacaoOsId").val(ordem.situacaoosid ?? "");
+        $("#produtoId").val(ordem.produtoid ?? "");
+        $("#cidadeId").val(ordem.cidadeid ?? "");
+        $("#observacao").val(ordem.observacao ?? "");
+        $("#clienteIdEdit").val(ordem.clienteid ?? "");
+
+        $("#blocoClienteCreate").addClass("d-none");
+        $("#blocoClienteEdit").removeClass("d-none");
+
+        osModal.show();
+    }
+
+    function criarOS() {
+        const payload = {
+            numOs: Number($("#numOs").val()),
+            situacaoOsId: Number($("#situacaoOsId").val()),
+            produtoId: Number($("#produtoId").val()),
+            cidadeId: Number($("#cidadeId").val()),
+            observacao: $("#observacao").val().trim(),
+            cliente: {
+                nomeCliente: $("#nomeCliente").val().trim(),
+                cpf: $("#cpfCliente").val().trim(),
+                situacaoClienteId: Number($("#situacaoClienteId").val()),
+                enderecoId: Number($("#enderecoId").val()),
+                numeroEndereco: Number($("#numeroEndereco").val()),
+                complementoCliente: $("#complementoCliente").val().trim()
+            }
+        };
+
+        $.ajax({
+            url: API_URL + "/ordemservico/create",
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            contentType: "application/json",
+            data: JSON.stringify(payload),
+            success: function (response) {
+                if (!response.success) {
+                    alert(response.error?.message || "Erro ao criar ordem de serviço.");
+                    return;
+                }
+
+                osModal.hide();
+                carregarDashboard();
+                carregarClientes();
+                alert("Ordem de serviço criada com sucesso.");
+            },
+            error: function (xhr) {
+                tratarErro(xhr, "Erro ao criar ordem de serviço.");
+            }
+        });
+    }
+
+    function atualizarOS() {
+        const payload = {
+            id: Number($("#osId").val()),
+            numOs: Number($("#numOs").val()),
+            situacaoOsId: Number($("#situacaoOsId").val()),
+            clienteId: Number($("#clienteIdEdit").val()),
+            produtoId: Number($("#produtoId").val()),
+            cidadeId: Number($("#cidadeId").val()),
+            observacao: $("#observacao").val().trim()
+        };
+
+        $.ajax({
+            url: API_URL + "/ordemservico/update",
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            contentType: "application/json",
+            data: JSON.stringify(payload),
+            success: function (response) {
+                if (!response.success) {
+                    alert(response.error?.message || "Erro ao atualizar ordem de serviço.");
+                    return;
+                }
+
+                osModal.hide();
+                carregarDashboard();
+                alert("Ordem de serviço atualizada com sucesso.");
+            },
+            error: function (xhr) {
+                tratarErro(xhr, "Erro ao atualizar ordem de serviço.");
+            }
+        });
+    }
+
+    function abrirModalLogs(id) {
+        ordemSelecionadaId = id;
+        $("#logsContainer").html(`<p class="text-muted mb-0">Carregando logs...</p>`);
+        logsModal.show();
+
+        $.ajax({
+            url: API_URL + "/ordemservicologs/listByOrdemServico?ordemServicoId=" + id,
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            success: function (response) {
+                if (!response.success) {
+                    $("#logsContainer").html(`<p class="text-muted mb-0">Nenhum log encontrado.</p>`);
+                    return;
+                }
+
+                const logs = response.data || [];
+                preencherLogs(logs);
+            },
+            error: function (xhr) {
+                if (xhr.status === 401) {
+                    localStorage.removeItem("token");
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                $("#logsContainer").html(`<p class="text-muted mb-0">Não foi possível carregar os logs.</p>`);
+            }
+        });
+    }
+
+    function preencherLogs(logs) {
+        const $container = $("#logsContainer");
+        $container.empty();
+
+        if (!logs.length) {
+            $container.html(`<p class="text-muted mb-0">Nenhum log encontrado para esta ordem.</p>`);
+            return;
+        }
+
+        logs.forEach(function (log) {
+            const dados = typeof log.dados === "string" ? tentarParseJson(log.dados) : log.dados;
+
+            $container.append(`
+                <div class="log-card">
+                    <div class="log-title">Ação: ${log.acao ?? "-"}</div>
+                    <div class="log-meta">Data: ${formatarData(log.data_criacao)}</div>
+                    <pre class="log-pre">${escapeHtml(JSON.stringify(dados, null, 2))}</pre>
+                </div>
+            `);
+        });
+    }
+
+    function getClasseStatus(situacao) {
+        const texto = (situacao || "").toLowerCase();
+
+        if (texto === "pendente") return "status-pendente";
+        if (texto === "em atendimento") return "status-atendimento";
+        return "status-default";
+    }
+
+    function formatarData(data) {
+        if (!data) return "-";
+
+        const dataObj = new Date(data);
+
+        if (isNaN(dataObj.getTime())) {
+            return data;
+        }
+
+        const dia = String(dataObj.getDate()).padStart(2, "0");
+        const mes = String(dataObj.getMonth() + 1).padStart(2, "0");
+        const ano = dataObj.getFullYear();
+        const hora = String(dataObj.getHours()).padStart(2, "0");
+        const minuto = String(dataObj.getMinutes()).padStart(2, "0");
+
+        return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
+    }
+
+    function tratarErro(xhr, mensagemPadrao) {
+        if (xhr.status === 401) {
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+            return;
+        }
+
+        const response = xhr.responseJSON;
+        alert(response?.error?.message || mensagemPadrao);
+    }
+
+    function tentarParseJson(valor) {
+        try {
+            return JSON.parse(valor);
+        } catch {
+            return valor;
+        }
+    }
+
+    function escapeHtml(texto) {
+        return String(texto)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;");
+    }
+
+    function parseJwt(token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            return JSON.parse(atob(base64));
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function aplicarFiltros() {
+        const numOs = $("#filtroNumOs").val().trim();
+        const data = $("#filtroData").val();
+        const situacao = $("#filtroSituacao").val().trim().toLowerCase();
+        const cliente = $("#filtroCliente").val().trim().toLowerCase();
+        const produto = $("#filtroProduto").val().trim().toLowerCase();
+
+        ordensFiltradas = ordens.filter(function (ordem) {
+            const numeroOs = String(ordem.numos ?? "");
+            const nomeCliente = String(ordem.nome_cliente ?? "").toLowerCase();
+            const descricaoProduto = String(ordem.descricao_produto ?? "").toLowerCase();
+            const descricaoSituacao = String(ordem.descricao_situacao_os ?? "").toLowerCase();
+            const dataCriacao = extrairDataISO(ordem.data_criacao);
+
+            if (numOs && !numeroOs.includes(numOs)) {
+                return false;
+            }
+
+            if (data && dataCriacao !== data) {
+                return false;
+            }
+
+            if (situacao && descricaoSituacao !== situacao) {
+                return false;
+            }
+
+            if (cliente && !nomeCliente.includes(cliente)) {
+                return false;
+            }
+
+            if (produto && !descricaoProduto.includes(produto)) {
+                return false;
+            }
+
+            return true;
+        });
+
+        preencherTabela(ordensFiltradas);
+        atualizarResumo(ordensFiltradas);
+    }
+
+    function limparFiltros() {
+        $("#filtroNumOs").val("");
+        $("#filtroData").val("");
+        $("#filtroSituacao").val("");
+        $("#filtroCliente").val("");
+        $("#filtroProduto").val("");
+
+        ordensFiltradas = [...ordens];
+        preencherTabela(ordensFiltradas);
+        atualizarResumo(ordensFiltradas);
+    }
+
+    function preencherFiltroSituacao(listaOrdens) {
+        const $select = $("#filtroSituacao");
+        const situacoesUnicas = [];
+
+        listaOrdens.forEach(function (ordem) {
+            const situacao = String(ordem.descricao_situacao_os ?? "").trim();
+
+            if (situacao && !situacoesUnicas.includes(situacao)) {
+                situacoesUnicas.push(situacao);
+            }
+        });
+
+        situacoesUnicas.sort();
+
+        $select.empty();
+        $select.append(`<option value="">Todas</option>`);
+
+        situacoesUnicas.forEach(function (situacao) {
+            $select.append(`<option value="${situacao.toLowerCase()}">${situacao}</option>`);
+        });
+    }
+
+    function extrairDataISO(data) {
+        if (!data) return "";
+
+        const dataObj = new Date(data);
+
+        if (isNaN(dataObj.getTime())) {
+            if (typeof data === "string" && data.includes(" ")) {
+                return data.split(" ")[0];
+            }
+            return "";
+        }
+
+        const ano = dataObj.getFullYear();
+        const mes = String(dataObj.getMonth() + 1).padStart(2, "0");
+        const dia = String(dataObj.getDate()).padStart(2, "0");
+
+        return `${ano}-${mes}-${dia}`;
+    }
+
 </script>
 
 </body>

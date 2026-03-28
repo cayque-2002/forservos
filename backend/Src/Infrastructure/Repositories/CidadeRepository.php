@@ -69,6 +69,7 @@ class CidadeRepository implements ICidadeRepository
                 c.id,
                 c.nome_cidade,
                 c.estadoid,
+                c.data_criacao,
                 e.nome_estado,
                 e.uf
             FROM cidade c

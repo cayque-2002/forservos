@@ -72,10 +72,11 @@ class OrdemServicoRepository implements IOrdemServicoRepository
             JOIN clientes c ON c.id = os.clienteid
             JOIN produtos p ON p.id = os.produtoid
             JOIN situacaoos s ON s.id = os.situacaoosid
-            WHERE DATE(os.data_criacao) = CURRENT_DATE
-              AND LOWER(s.descricao_situacao_os) IN ('pendente', 'em atendimento')
             ORDER BY os.id DESC
         ");
+        //Deixar esse cara comentado pq vou testar filtro trazendo tudo
+        // WHERE DATE(os.data_criacao) = CURRENT_DATE
+        //       AND LOWER(s.descricao_situacao_os) IN ('pendente', 'em atendimento')
 
         $stmt->execute();
 
